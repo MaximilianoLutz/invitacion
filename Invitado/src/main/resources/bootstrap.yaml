@@ -1,6 +1,6 @@
 spring:
   application:
-    name: productos-service
+    name: invitado-microservicio
   cloud:
     config:
       enabled: true
