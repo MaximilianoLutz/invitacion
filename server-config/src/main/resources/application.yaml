@@ -5,7 +5,7 @@ spring:
     config:
       server:
         git:
-          default-label: config-server
+          default-label: eureka #Rama de git
           uri: https://github.com/MaximilianoLutz/invitacion
           search-paths: /config-data
   application:
