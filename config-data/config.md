@@ -8,3 +8,6 @@ renombro los application.properties a bootstrap.yaml con el nombre de cada micro
 git add .
 git commit -m "config server"
 git push -u origin config-server
+
+creo rama eureka para configurar el server y los clientes 3h
+
