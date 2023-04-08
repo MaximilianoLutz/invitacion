@@ -5,7 +5,7 @@ spring:
     config:
       server:
         git:
-          default-label: multiple-instances #Rama de git
+          default-label: gateway #Rama de git
           uri: https://github.com/MaximilianoLutz/invitacion
           search-paths: /config-data
   application:
