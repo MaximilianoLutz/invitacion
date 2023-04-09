@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.es.mlutzdev.usuario.modelos.Producto;
 
-@FeignClient(name = "productos-service", url = "http://localhost:8003")
+@FeignClient(name = "productos-microservicio")
 @RequestMapping("/producto")
 public interface ProductoFeignClient {
 
