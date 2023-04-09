@@ -23,8 +23,8 @@ spring:
         - id: productos-microservicio
           uri: lb://productos-microservicio
           predicates:
-            - path=/productos/**
+            - Path=/productos/**
         - id: invitado-microservicio
           uri: lb://invitado-microservicio
           predicates:
-            - path=/invitado/**
+            - Path=/invitado/**
