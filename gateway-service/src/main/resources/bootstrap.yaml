@@ -5,6 +5,3 @@ spring:
     config:
       enabled: true
       uri: http://localhost:8081
-  main:
-    web-application-type: reactive
-    
