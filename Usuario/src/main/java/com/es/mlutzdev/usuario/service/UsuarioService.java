@@ -49,14 +49,14 @@ public class UsuarioService implements I_UsuarioService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Invitado> getAllInvitado(Long usuarioId){
-		List<Invitado> invitados = restTemplate.getForObject("http://localHost:8002/invitado/usuario/" + usuarioId, List.class) ;
+		List<Invitado> invitados = restTemplate.getForObject("http://invitado-microservicio/invitado/usuario/" + usuarioId, List.class) ;
 		return invitados;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Producto> getAllProducto(Long usuarioId){
-		List<Producto> producto = restTemplate.getForObject("http://localHost:8003/producto/usuario/" + usuarioId, List.class) ;
+		List<Producto> producto = restTemplate.getForObject("http://productos-microservicio/producto/usuario/" + usuarioId, List.class) ;
 		
 		return producto;
 	}

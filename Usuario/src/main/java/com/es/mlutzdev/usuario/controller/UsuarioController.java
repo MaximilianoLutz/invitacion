@@ -59,7 +59,7 @@ public class UsuarioController {
 	
 	@CircuitBreaker(name= "invitadoCB", fallbackMethod = "fallBackGetInvitado")
 	@GetMapping("/invitados/{usuarioId}")
-	public ResponseEntity< List<Invitado>> getInvitados(@PathVariable Long usuarioId){
+	public ResponseEntity< List<Invitado>> getAllInvitados(@PathVariable Long usuarioId){
 		
 		Usuario usuario = usuarioService.findById(usuarioId);
 		
@@ -67,13 +67,13 @@ public class UsuarioController {
 			return ResponseEntity.notFound().build();
 		}
 		
-		List<Invitado> invitados = usuarioService.getAllInvitado(usuarioId);
+		List<Invitado> invitados = usuarioService.getInvitado(usuarioId);
 		
 		return ResponseEntity.ok(invitados);
 	}
 	@CircuitBreaker(name= "productoCB", fallbackMethod = "fallBackGetProducto")
 	@GetMapping("/productos/{usuarioId}")
-	public ResponseEntity< List<Producto>> getProductos(@PathVariable Long usuarioId){
+	public ResponseEntity< List<Producto>> getAllProductos(@PathVariable Long usuarioId){
 		
 		Usuario usuario = usuarioService.findById(usuarioId);
 		
@@ -81,7 +81,7 @@ public class UsuarioController {
 			return ResponseEntity.notFound().build();
 		}
 		
-		List<Producto> productos = usuarioService.getAllProducto(usuarioId);
+		List<Producto> productos = usuarioService.getProducto(usuarioId);
 		
 		return ResponseEntity.ok(productos);
 	}
