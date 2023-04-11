@@ -5,7 +5,7 @@ spring:
     config:
       server:
         git:
-          default-label: circuit-breaker #Rama de git
+          default-label: zipkin-sleuth
           uri: https://github.com/MaximilianoLutz/invitacion
           search-paths: /config-data
   application:
