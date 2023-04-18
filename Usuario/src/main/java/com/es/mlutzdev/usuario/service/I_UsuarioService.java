@@ -12,7 +12,7 @@ public interface I_UsuarioService {
 
 	List<Usuario> getAll();
 
-	Usuario findById(Long Id);
+	Usuario findById(Long id);
 
 	Usuario Save(Usuario usuario);
 

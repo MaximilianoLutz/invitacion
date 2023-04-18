@@ -3,13 +3,15 @@ package com.es.mlutzdev.usuario.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.es.mlutzdev.usuario.entidades.Usuario;
+import com.es.mlutzdev.usuario.exceptions.ResourceNotFoundException;
 import com.es.mlutzdev.usuario.feignClient.InvitadoFeignClient;
 import com.es.mlutzdev.usuario.feignClient.ProductoFeignClient;
 import com.es.mlutzdev.usuario.modelos.Invitado;
@@ -35,17 +37,23 @@ public class UsuarioService implements I_UsuarioService {
 	public List<Usuario> getAll(){
 		return usuarioRepository.findAll();
 	}
-	
+	@Transactional(readOnly = true)
 	@Override
-	public Usuario findById(Long Id) {
-		return usuarioRepository.findById(Id).orElse(null);
+	public Usuario findById(Long id) {
+		return usuarioRepository.findById(id).orElse(null);
 	}
-	
+	@Transactional
 	@Override
 	public Usuario Save(Usuario usuario) {
-		return usuarioRepository.save(usuario);
+		
+		Optional<Usuario> usuarioGuardado = usuarioRepository.findByEmail(usuario.getEmail());
+		if(usuarioGuardado.isPresent()) {
+			throw new ResourceNotFoundException("El usuario con el email" + usuario.getEmail()+ "Ya existe");
+		}else {
+			return usuarioRepository.save(usuario);
+		}
 	}
-	
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Invitado> getAllInvitado(Long usuarioId){
@@ -53,6 +61,7 @@ public class UsuarioService implements I_UsuarioService {
 		return invitados;
 	}
 	
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Producto> getAllProducto(Long usuarioId){
@@ -61,6 +70,7 @@ public class UsuarioService implements I_UsuarioService {
 		return producto;
 	}
 	
+	
 	@Override
 	public Invitado saveInvitado(Long usuarioId, Invitado invitado) {
 		invitado.setUsuarioId(usuarioId);
@@ -68,6 +78,7 @@ public class UsuarioService implements I_UsuarioService {
 		return nuevoInvitado;
 	}
 
+	
 	@Override
 	public List<Invitado> getInvitado(Long usuarioId) {
 		List<Invitado> invitados = invitadoFeignClient.getInvitado(usuarioId);

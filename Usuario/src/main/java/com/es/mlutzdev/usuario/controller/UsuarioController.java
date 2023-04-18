@@ -51,6 +51,7 @@ public class UsuarioController {
 	
 	@PostMapping
 	public ResponseEntity<Usuario> guardarUsuario(@RequestBody Usuario usuario ){
+
 		System.out.print(usuario);
 	
 		Usuario nuevoUsuario = usuarioService.Save(usuario);

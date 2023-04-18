@@ -1,6 +1,5 @@
 package com.es.mlutzdev.invitado.entidades;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,7 +14,6 @@ public class Invitado {
 	private String nombre;
 	private String apellido;
 	private String vinculo;
-	@Column(nullable = false, unique = true)
 	private String email;
 	private Long usuarioId;
 	

@@ -4,30 +4,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
-import com.es.mlutzdev.usuario.controller.UsuarioController;
 import com.es.mlutzdev.usuario.entidades.Usuario;
 import com.es.mlutzdev.usuario.repository.I_UsuarioRepository;
 
-
 @SpringBootTest
-class UsuarioApplicationTests {
+public class UsuarioRepositoryTest {
 	
 	@Autowired
 	private I_UsuarioRepository usuarioRepository;
-	
-	@Autowired
-	private UsuarioController controller;
 	
 	private Usuario usuario;
 	
@@ -36,15 +26,10 @@ class UsuarioApplicationTests {
 		usuario = Usuario.builder()
 				.nombre("José")
 				.email("jose" + (Math.random() * 100)+"@gmail.com")
-				.build();
-		
-	}
-
-	@Test
-	public void contextLoads() throws Exception {
-		assertThat(controller).isNotNull();
+				.build();		
 	}
 	
+
 	@Test
 	public void GuardarUsuarioTest() {
 		//Tdd pruebas unitaria funcionalidades
@@ -89,7 +74,6 @@ class UsuarioApplicationTests {
 		assertThat(usuarios.size()).isEqualTo(3);
 	}
 
-	@Transactional
 	@Test
 	public void actualizarUsuario() {
 		
@@ -129,11 +113,4 @@ class UsuarioApplicationTests {
 		
 		assertThat(usuarioDB).isNotNull();
 	}
-	
-	
-		 
-	
-	
-
-	
 }
