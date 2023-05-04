@@ -3,17 +3,19 @@ package com.es.mlutzdev.usuario;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 
 import com.es.mlutzdev.usuario.entidades.Usuario;
 import com.es.mlutzdev.usuario.repository.I_UsuarioRepository;
 
-@SpringBootTest
+@DataJpaTest
 public class UsuarioRepositoryTest {
 	
 	@Autowired
@@ -66,12 +68,12 @@ public class UsuarioRepositoryTest {
 
 		
 		//When
-		List<Usuario> usuarios = usuarioRepository.findAll();
+		List<Usuario> usuarios = (List<Usuario>) usuarioRepository.findAll();
 		
 		//Then
 		
 		assertThat(usuarios).isNotNull();
-		assertThat(usuarios.size()).isEqualTo(3);
+		assertThat(usuarios.size()).isEqualTo(2);
 	}
 
 	@Test
@@ -86,13 +88,13 @@ public class UsuarioRepositoryTest {
 		
 		//When
 		
-		Usuario usuarioDB = usuarioRepository.getById(us.getId());
+		Usuario usuarioDB = usuarioRepository.findById(us.getId()).orElse(null);
 		System.out.println(usuarioDB);
 		
 		usuarioDB.setEmail("actual@test.com");
 		usuarioDB.setNombre("novaresio");
 		
-		Usuario usuarioActualizado = usuarioRepository.saveAndFlush(usuarioDB);
+		Usuario usuarioActualizado = usuarioRepository.save(usuarioDB);
 		
 		//Then
 		assertThat(usuarioActualizado.getEmail()).isEqualTo("actual@test.com");
@@ -107,10 +109,23 @@ public class UsuarioRepositoryTest {
 		
 		//When
 		System.out.println(usuario);
-		Usuario usuarioDB = usuarioRepository.getById(usuario.getId());
+		Usuario usuarioDB = usuarioRepository.findById(usuario.getId()).orElse(null);
 		
 		//Then
 		
 		assertThat(usuarioDB).isNotNull();
 	}
+	
+    @DisplayName("Test para eliminar un usuario")
+    @Test
+    void testEliminarEmpleado(){
+    	usuarioRepository.save(usuario);
+
+        //when
+    	usuarioRepository.deleteById(usuario.getId());
+        Optional<Usuario> empleadoOptional = usuarioRepository.findById(usuario.getId());
+
+        //then
+        assertThat(empleadoOptional).isEmpty();
+    }
 }

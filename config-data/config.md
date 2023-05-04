@@ -11,7 +11,7 @@ git push -u origin config-server
 
 creo rama eureka para configurar el server y los clientes 3h
 
-Heroku es una empresa muy simple de plataforma como servicio. La forma en que funciona Heroku es muy sencilla:‎
+Heroku es una empresa muy simple de plataforma como servicio. La forma en que funciona Heroku es muy sencilla:
 
 ‎Tiene varios proyectos (servicios) en repositorios de Git.‎
 ‎Crea una aplicación Heroku para cada proyecto (cada repositorio de Git).‎

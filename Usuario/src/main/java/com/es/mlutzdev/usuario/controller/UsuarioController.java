@@ -1,8 +1,15 @@
 package com.es.mlutzdev.usuario.controller;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,116 +31,135 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 @RequestMapping("/usuario")
 public class UsuarioController {
 	
-	
+	protected final Logger  logger = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
 	private I_UsuarioService usuarioService;
-	
-	
+
 	@GetMapping
-	public ResponseEntity<List<Usuario>> listarUsuarios(){
-		List<Usuario>usuarios = usuarioService.getAll();
-		
+	public ResponseEntity<List<Usuario>> listarUsuarios() {
+		List<Usuario> usuarios = usuarioService.getAll();
+
 		if (usuarios.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		}
-		
+
 		return ResponseEntity.ok(usuarios);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<Usuario> obtenerUsuario(@PathVariable Long id){
+	public ResponseEntity<Usuario> obtenerUsuario(@PathVariable Long id) {
 		Usuario usuario = usuarioService.findById(id);
-		if(usuario == null) {
+		if (usuario == null) {
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.ok(usuario);
 	}
-	
-	@PostMapping
-	public ResponseEntity<Usuario> guardarUsuario(@RequestBody Usuario usuario ){
 
-		System.out.print(usuario);
-	
-		Usuario nuevoUsuario = usuarioService.Save(usuario);
-		return ResponseEntity.ok(nuevoUsuario);
+	@PostMapping
+	public ResponseEntity<Usuario> guardarUsuario(@RequestBody Usuario usuario) {
+
+		try {
+
+			if (usuario.getId() != null ) {
+
+				System.out.print(usuario);
+				
+
+			}
+			Usuario nuevoUsuario = usuarioService.Save(usuario);
+			return ResponseEntity.ok(nuevoUsuario);
+			
+		} catch (Exception ex) {
+			logger.error(ex.getMessage());
+			return ResponseEntity.noContent().build();
+		}
 	}
-	
-	@CircuitBreaker(name= "invitadoCB", fallbackMethod = "fallBackGetInvitado")
+
+	@CircuitBreaker(name = "invitadoCB", fallbackMethod = "fallBackGetInvitado")
 	@GetMapping("/invitados/{usuarioId}")
-	public ResponseEntity< List<Invitado>> getAllInvitados(@PathVariable Long usuarioId){
-		
+	public ResponseEntity<List<Invitado>> getAllInvitados(@PathVariable Long usuarioId) {
+
 		Usuario usuario = usuarioService.findById(usuarioId);
-		
+
 		if (usuario == null) {
 			return ResponseEntity.notFound().build();
 		}
-		
+
 		List<Invitado> invitados = usuarioService.getInvitado(usuarioId);
-		
+
 		return ResponseEntity.ok(invitados);
 	}
-	@CircuitBreaker(name= "productoCB", fallbackMethod = "fallBackGetProducto")
+
+	@CircuitBreaker(name = "productoCB", fallbackMethod = "fallBackGetProducto")
 	@GetMapping("/productos/{usuarioId}")
-	public ResponseEntity< List<Producto>> getAllProductos(@PathVariable Long usuarioId){
-		
+	public ResponseEntity<List<Producto>> getAllProductos(@PathVariable Long usuarioId) {
+
 		Usuario usuario = usuarioService.findById(usuarioId);
-		
+
 		if (usuario == null) {
 			return ResponseEntity.notFound().build();
 		}
-		
+
 		List<Producto> productos = usuarioService.getProducto(usuarioId);
-		
+
 		return ResponseEntity.ok(productos);
 	}
-	
-	@CircuitBreaker(name= "invitadoCB", fallbackMethod = "fallBackSaveInvitado")
+
+	@CircuitBreaker(name = "invitadoCB", fallbackMethod = "fallBackSaveInvitado")
 	@PostMapping("/invitado/{usuarioId}")
 	public ResponseEntity<Invitado> saveInvitado(@PathVariable Long usuarioId, @RequestBody Invitado invitado) {
-		
+
 		invitado.setUsuarioId(usuarioId);
-		
+
 		Invitado invitadoNuevo = usuarioService.saveInvitado(usuarioId, invitado);
-		
+
 		return ResponseEntity.ok(invitadoNuevo);
 	}
-	
-	@CircuitBreaker(name= "productoCB", fallbackMethod = "fallBackSaveProducto")
+
+	@CircuitBreaker(name = "productoCB", fallbackMethod = "fallBackSaveProducto")
 	@PostMapping("/producto/{usuarioId}")
 	public ResponseEntity<Producto> saveProducto(@PathVariable Long usuarioId, @RequestBody Producto producto) {
-		
+
 		producto.setUsuarioId(usuarioId);
-		
+
 		Producto productoNuevo = usuarioService.saveProducto(usuarioId, producto);
-		
+
 		return ResponseEntity.ok(productoNuevo);
 	}
-	
-	@CircuitBreaker(name= "todosCB", fallbackMethod = "fallBackGetUserAndProductoAndInvitado")
+
+	@CircuitBreaker(name = "todosCB", fallbackMethod = "fallBackGetUserAndProductoAndInvitado")
 	@GetMapping("/todos/{usuarioId}")
-	public ResponseEntity<Map<String, Object>> obtenerTodos(@PathVariable Long usuarioId){
-		
-		Map<String, Object> resultado =  usuarioService.getUserAndProductoAndInvitado(usuarioId);
-		
+	public ResponseEntity<Map<String, Object>> obtenerTodos(@PathVariable Long usuarioId) {
+
+		Map<String, Object> resultado = usuarioService.getUserAndProductoAndInvitado(usuarioId);
+
 		return ResponseEntity.ok(resultado);
 	}
-	
-	//CircuitBreaker
-	private ResponseEntity<List<Invitado>> fallBackGetInvitado(@PathVariable("usuarioId") Long id, RuntimeException exception){
+
+	// CircuitBreaker
+	private ResponseEntity<List<Invitado>> fallBackGetInvitado(@PathVariable("usuarioId") Long id,
+			RuntimeException exception) {
 		return new ResponseEntity("El usuario" + id + "no tiene invitados disponibles", HttpStatus.OK);
 	}
-	
-	private ResponseEntity<List<Producto>> fallBackGetProducto(@PathVariable("usuarioId") Long id, RuntimeException exception){
+
+	private ResponseEntity<List<Producto>> fallBackGetProducto(@PathVariable("usuarioId") Long id,
+			RuntimeException exception) {
 		return new ResponseEntity("El usuario" + id + "no tiene productos disponibles", HttpStatus.OK);
 	}
-	private ResponseEntity<Invitado> fallBackSaveInvitado(@PathVariable("usuarioId") Long id, @RequestBody Invitado invitado ,RuntimeException exception){
+
+	private ResponseEntity<Invitado> fallBackSaveInvitado(@PathVariable("usuarioId") Long id,
+			@RequestBody Invitado invitado, RuntimeException exception) {
 		return new ResponseEntity("El usuario" + id + "no pudo guardar invitados", HttpStatus.OK);
 	}
-	private ResponseEntity<Producto> fallBackSaveProducto(@PathVariable("usuarioId") Long id, @RequestBody Producto producto, RuntimeException exception){
+
+	private ResponseEntity<Producto> fallBackSaveProducto(@PathVariable("usuarioId") Long id,
+			@RequestBody Producto producto, RuntimeException exception) {
 		return new ResponseEntity("El usuario" + id + "no pudo guardar productos", HttpStatus.OK);
 	}
-	private ResponseEntity<Map<String, Object>> fallBackGetUserAndProductoAndInvitado(@PathVariable("usuarioId") Long id, RuntimeException exception){
+
+	private ResponseEntity<Map<String, Object>> fallBackGetUserAndProductoAndInvitado(
+			@PathVariable("usuarioId") Long id, RuntimeException exception) {
 		return new ResponseEntity("El usuario" + id + "no se encuentra disponible actualmente", HttpStatus.OK);
 	}
-	
 }

@@ -35,7 +35,7 @@ public class UsuarioService implements I_UsuarioService {
 	
 	@Override
 	public List<Usuario> getAll(){
-		return usuarioRepository.findAll();
+		return (List<Usuario>) usuarioRepository.findAll();
 	}
 	@Transactional(readOnly = true)
 	@Override

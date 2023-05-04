@@ -81,7 +81,7 @@ class UsuarioApplicationTests {
 
 		
 		//When
-		List<Usuario> usuarios = usuarioRepository.findAll();
+		List<Usuario> usuarios = (List<Usuario>) usuarioRepository.findAll();
 		
 		//Then
 		
@@ -102,13 +102,13 @@ class UsuarioApplicationTests {
 		
 		//When
 		
-		Usuario usuarioDB = usuarioRepository.getById(us.getId());
+		Usuario usuarioDB = usuarioRepository.findById(us.getId()).orElse(null);
 		System.out.println(usuarioDB);
 		
 		usuarioDB.setEmail("actual@test.com");
 		usuarioDB.setNombre("novaresio");
 		
-		Usuario usuarioActualizado = usuarioRepository.saveAndFlush(usuarioDB);
+		Usuario usuarioActualizado = usuarioRepository.save(usuarioDB);
 		
 		//Then
 		assertThat(usuarioActualizado.getEmail()).isEqualTo("actual@test.com");
@@ -123,7 +123,7 @@ class UsuarioApplicationTests {
 		
 		//When
 		System.out.println(usuario);
-		Usuario usuarioDB = usuarioRepository.getById(usuario.getId());
+		Usuario usuarioDB = usuarioRepository.findById(usuario.getId()).orElse(null);
 		
 		//Then
 		
