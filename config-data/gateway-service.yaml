@@ -28,3 +28,7 @@ spring:
           uri: lb://invitado-microservicio
           predicates:
             - Path=/invitado/**
+        - id: customer
+          uri: lb://customer
+          predicates:
+            - Path=/customer/**
